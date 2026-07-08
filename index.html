@@ -4,32 +4,125 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Angoltanár</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111827;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .card {
+      text-align: center;
+      background: #1f2937;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(0,0,0,.4);
+    }
+
+    h1 {
+      margin-top: 0;
+    }
+
+    button {
+      font-size: 18px;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      background: #10b981;
+      color: white;
+    }
+
+    button:hover {
+      background: #059669;
+    }
+
+    #status{
+      margin-top:20px;
+      color:#d1d5db;
+    }
+  </style>
 </head>
+
 <body>
-  <h1>AI Angoltanár</h1>
 
-  <script>
-    var vapiInstance = null;
-    const assistant = "90df3af1-afcd-4120-9767-10bbe0090060";
-    const apiKey = "YOUR_PUBLIC_KEY";
+<div class="card">
+    <h1>🎙 AI Angoltanár</h1>
 
-    (function (d, t) {
-      var g = document.createElement(t),
-          s = d.getElementsByTagName(t)[0];
+    <button id="callButton">
+        Beszélgetés indítása
+    </button>
 
-      g.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
-      g.defer = true;
-      g.async = true;
-      s.parentNode.insertBefore(g, s);
+    <p id="status">
+        Készen áll.
+    </p>
+</div>
 
-      g.onload = function () {
-        vapiInstance = window.vapiSDK.run({
-          apiKey: apiKey,
-          assistant: assistant,
-          config: {}
-        });
-      };
-    })(document, "script");
-  </script>
+<script>
+const assistant = "90df3af1-afcd-4120-9767-10bbe0090060";
+const apiKey = "e6ed27b0-b0d1-4ae1-9e77-f2b1b9fe351d"; // <-- IDE ÍRD A SAJÁT PUBLIC API KEY-T
+
+let vapi = null;
+let started = false;
+
+(function(d,t){
+
+const s=d.createElement(t);
+
+s.src="https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
+
+s.async=true;
+
+document.body.appendChild(s);
+
+s.onload=()=>{
+
+vapi=window.vapiSDK.run({
+assistant:assistant,
+apiKey:apiKey
+});
+
+document.getElementById("status").innerText="AI betöltve.";
+};
+
+})(document,"script");
+
+document.getElementById("callButton").onclick=()=>{
+
+if(!vapi){
+alert("A Vapi még nem töltődött be.");
+return;
+}
+
+if(!started){
+
+vapi.start();
+
+started=true;
+
+document.getElementById("callButton").innerText="Beszélgetés leállítása";
+document.getElementById("status").innerText="Beszélgetés folyamatban...";
+
+}else{
+
+vapi.stop();
+
+started=false;
+
+document.getElementById("callButton").innerText="Beszélgetés indítása";
+document.getElementById("status").innerText="Leállítva.";
+
+}
+
+};
+
+</script>
+
 </body>
 </html>
