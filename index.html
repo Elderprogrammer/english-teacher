@@ -1,0 +1,16 @@
+<script type="module">
+  import Vapi from "https://cdn.jsdelivr.net/npm/@vapi-ai/web/+esm";
+
+  const vapi = new Vapi(e6ed27b0-b0d1-4ae1-9e77-f2b1b9fe351d);
+
+  document.getElementById("start").onclick = () => {
+    vapi.start("90df3af1-afcd-4120-9767-10bbe0090060");
+  };
+
+  document.getElementById("stop").onclick = () => {
+    vapi.stop();
+  };
+</script>
+
+<button id="start">🎤 Beszélgetés indítása</button>
+<button id="stop">⏹️ Leállítás</button>
