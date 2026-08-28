@@ -2,696 +2,674 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Angoltanár</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      background:
-        radial-gradient(circle at top, #24105c 0%, #080b16 42%, #05070d 100%);
-      color: #fff;
-      font-family: Arial, Helvetica, sans-serif;
-      min-height: 100vh;
-    }
-
-    button,
-    input {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    .container {
-      width: min(1150px, 92%);
-      margin: auto;
-    }
-
-    nav {
-      height: 80px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid rgba(255,255,255,.08);
-    }
-
-    .logo {
-      font-size: 22px;
-      font-weight: 900;
-    }
-
-    .logo span {
-      background: linear-gradient(90deg,#a78bfa,#22d3ee);
-      -webkit-background-clip: text;
-      color: transparent;
-    }
-
-    .nav-buttons {
-      display: flex;
-      gap: 10px;
-    }
-
-    .btn {
-      border: 0;
-      border-radius: 12px;
-      padding: 13px 20px;
-      font-weight: 800;
-      color: white;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg,#7c3aed,#4f46e5);
-      box-shadow: 0 15px 45px rgba(124,58,237,.25);
-    }
-
-    .btn-secondary {
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.12);
-    }
-
-    .hero {
-      text-align: center;
-      padding: 95px 10px 100px;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 8px 15px;
-      border-radius: 999px;
-      background: rgba(124,58,237,.13);
-      border: 1px solid rgba(167,139,250,.35);
-      color: #d8ccff;
-      font-size: 14px;
-    }
-
-    .hero h1 {
-      font-size: clamp(45px,8vw,82px);
-      line-height: 1;
-      letter-spacing: -4px;
-      margin: 25px 0;
-    }
-
-    .gradient {
-      background: linear-gradient(90deg,#a78bfa,#22d3ee);
-      -webkit-background-clip: text;
-      color: transparent;
-    }
-
-    .hero p {
-      max-width: 720px;
-      margin: auto;
-      color: #aab3c5;
-      font-size: 19px;
-      line-height: 1.65;
-    }
-
-    .section-title {
-      text-align: center;
-      font-size: 35px;
-      margin: 20px 0 40px;
-    }
-
-    .features {
-      display: grid;
-      grid-template-columns: repeat(4,1fr);
-      gap: 18px;
-      margin-bottom: 100px;
-    }
-
-    .card {
-      background: rgba(17,24,39,.7);
-      border: 1px solid rgba(255,255,255,.09);
-      border-radius: 22px;
-      padding: 27px;
-      backdrop-filter: blur(15px);
-    }
-
-    .feature-icon {
-      font-size: 32px;
-    }
-
-    .card h3 {
-      margin: 15px 0 8px;
-    }
-
-    .card p {
-      color: #a7b0c3;
-      line-height: 1.55;
-    }
-
-    .pricing {
-      display: grid;
-      grid-template-columns: repeat(3,1fr);
-      gap: 20px;
-    }
-
-    .price-card {
-      position: relative;
-      background: rgba(17,24,39,.75);
-      border: 1px solid rgba(255,255,255,.1);
-      border-radius: 25px;
-      padding: 32px;
-    }
-
-    .price-card.popular {
-      border-color: #8b5cf6;
-      box-shadow: 0 0 65px rgba(124,58,237,.18);
-    }
-
-    .popular-label {
-      position: absolute;
-      top: -13px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #7c3aed;
-      border-radius: 999px;
-      padding: 6px 14px;
-      font-size: 11px;
-      font-weight: 900;
-      white-space: nowrap;
-    }
-
-    .plan {
-      color: #aeb8cb;
-      font-weight: bold;
-    }
-
-    .price {
-      font-size: 38px;
-      font-weight: 900;
-      margin-top: 10px;
-    }
-
-    .period {
-      color: #78849a;
-      font-size: 14px;
-    }
-
-    ul {
-      padding: 0;
-      list-style: none;
-      margin-top: 25px;
-    }
-
-    li {
-      margin: 13px 0;
-      color: #d4d9e4;
-    }
-
-    li::before {
-      content: "✓";
-      color: #34d399;
-      font-weight: bold;
-      margin-right: 9px;
-    }
-
-    .payment {
-      text-align: center;
-      margin: 35px 0;
-      padding: 30px;
-      background: rgba(255,255,255,.035);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 22px;
-    }
-
-    .payment p {
-      color: #a7b0c3;
-      line-height: 1.6;
-    }
-
-    .email {
-      color: #c4b5fd;
-      font-size: 18px;
-      font-weight: 900;
-    }
-
-    .code-area {
-      text-align: center;
-      padding: 30px 0 90px;
-    }
-
-    .code-link {
-      border: 0;
-      background: none;
-      color: #8994aa;
-      text-decoration: underline;
-    }
-
-    footer {
-      border-top: 1px solid rgba(255,255,255,.07);
-      text-align: center;
-      padding: 30px;
-      color: #687389;
-    }
-
-    /* MODAL */
-
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 100;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      background: rgba(0,0,0,.83);
-      backdrop-filter: blur(12px);
-    }
-
-    .modal-box {
-      width: min(430px,100%);
-      background: #101625;
-      border: 1px solid rgba(255,255,255,.1);
-      border-radius: 24px;
-      padding: 30px;
-    }
-
-    .close {
-      float: right;
-      border: 0;
-      background: none;
-      color: #9aa4b8;
-      font-size: 27px;
-    }
-
-    .modal-box h2 {
-      margin-top: 0;
-    }
-
-    .modal-box p {
-      color: #a7b0c3;
-      line-height: 1.5;
-    }
-
-    input {
-      width: 100%;
-      margin: 7px 0;
-      padding: 14px;
-      border-radius: 11px;
-      border: 1px solid rgba(255,255,255,.1);
-      background: #080d19;
-      color: white;
-      outline: none;
-    }
-
-    input:focus {
-      border-color: #7c3aed;
-    }
-
-    .modal-submit {
-      width: 100%;
-      margin-top: 10px;
-      padding: 14px;
-      border: 0;
-      border-radius: 11px;
-      background: linear-gradient(135deg,#7c3aed,#4f46e5);
-      color: white;
-      font-weight: 900;
-    }
-
-    .switch {
-      text-align: center;
-      margin-top: 17px;
-      color: #929db2;
-      font-size: 14px;
-    }
-
-    .switch button {
-      border: 0;
-      background: none;
-      color: #b9a7ff;
-    }
-
-    .message {
-      min-height: 20px;
-      margin-top: 10px;
-      font-size: 13px;
-    }
-
-    .error {
-      color: #fb7185;
-    }
-
-    .success {
-      color: #34d399;
-    }
-
-    /* APP */
-
-    #app {
-      display: none;
-      min-height: 80vh;
-      text-align: center;
-      padding: 90px 15px;
-    }
-
-    .premium {
-      display: inline-block;
-      padding: 8px 14px;
-      border-radius: 999px;
-      color: #a7f3d0;
-      background: rgba(52,211,153,.08);
-      border: 1px solid rgba(52,211,153,.2);
-      font-size: 13px;
-    }
-
-    #app h1 {
-      font-size: clamp(40px,7vw,65px);
-      margin: 20px 0 10px;
-    }
-
-    .app-subtitle {
-      color: #a7b0c3;
-    }
-
-    #callButton {
-      width: 160px;
-      height: 160px;
-      margin: 40px 0 20px;
-      border-radius: 50%;
-      border: 1px solid rgba(139,92,246,.6);
-      background:
-        radial-gradient(circle at 35% 25%,#5b21b6,#111827 70%);
-      color: white;
-      font-size: 55px;
-      box-shadow: 0 0 80px rgba(124,58,237,.25);
-      transition: .2s;
-    }
-
-    #callButton:hover {
-      transform: scale(1.04);
-    }
-
-    #callButton.active {
-      border-color: #22d3ee;
-      box-shadow: 0 0 100px rgba(34,211,238,.45);
-      transform: scale(1.05);
-    }
-
-    #status {
-      color: #9aa6ba;
-      min-height: 24px;
-    }
-
-    @media(max-width:850px) {
-      .features {
-        grid-template-columns: repeat(2,1fr);
-      }
-
-      .pricing {
-        grid-template-columns: 1fr;
-        max-width: 500px;
-        margin: auto;
-      }
-    }
-
-    @media(max-width:550px) {
-      .features {
-        grid-template-columns: 1fr;
-      }
-
-      .hero h1 {
-        letter-spacing: -2px;
-      }
-
-      .nav-buttons .btn-secondary {
-        display: none;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AI Angoltanár</title>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:Inter,Arial,sans-serif;
+  color:#fff;
+  background:
+    radial-gradient(circle at 20% 0%,#31206d 0%,transparent 35%),
+    radial-gradient(circle at 90% 10%,#064e5c 0%,transparent 30%),
+    #060912;
+  min-height:100vh;
+}
+
+button,input{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+.container{
+  width:min(1120px,92%);
+  margin:auto;
+}
+
+nav{
+  height:78px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.logo{
+  font-size:22px;
+  font-weight:900;
+}
+
+.logo span{
+  background:linear-gradient(90deg,#a78bfa,#22d3ee);
+  -webkit-background-clip:text;
+  color:transparent;
+}
+
+.nav-actions{
+  display:flex;
+  gap:10px;
+}
+
+.btn{
+  border:0;
+  border-radius:13px;
+  padding:13px 20px;
+  font-weight:800;
+  color:white;
+}
+
+.primary{
+  background:linear-gradient(135deg,#7c3aed,#4f46e5);
+  box-shadow:0 15px 45px rgba(124,58,237,.25);
+}
+
+.secondary{
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);
+}
+
+.hero{
+  text-align:center;
+  padding:100px 10px 110px;
+}
+
+.badge{
+  display:inline-block;
+  padding:8px 15px;
+  border-radius:999px;
+  color:#ddd6fe;
+  background:rgba(124,58,237,.12);
+  border:1px solid rgba(167,139,250,.3);
+}
+
+.hero h1{
+  font-size:clamp(48px,8vw,86px);
+  line-height:.98;
+  letter-spacing:-4px;
+  margin:25px 0;
+}
+
+.gradient{
+  background:linear-gradient(90deg,#a78bfa,#22d3ee);
+  -webkit-background-clip:text;
+  color:transparent;
+}
+
+.hero p{
+  max-width:720px;
+  margin:auto;
+  color:#aab4c7;
+  font-size:19px;
+  line-height:1.65;
+}
+
+.section-title{
+  text-align:center;
+  font-size:36px;
+  margin:20px 0 38px;
+}
+
+.features{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:18px;
+  margin-bottom:100px;
+}
+
+.card{
+  padding:28px;
+  border-radius:23px;
+  background:rgba(15,23,42,.68);
+  border:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(16px);
+}
+
+.icon{
+  font-size:32px;
+}
+
+.card h3{
+  margin:14px 0 8px;
+}
+
+.card p{
+  color:#9faabd;
+  line-height:1.55;
+}
+
+.pricing{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+}
+
+.price-card{
+  position:relative;
+  padding:32px;
+  border-radius:25px;
+  background:rgba(15,23,42,.7);
+  border:1px solid rgba(255,255,255,.09);
+}
+
+.price-card.popular{
+  border-color:#8b5cf6;
+  box-shadow:0 0 70px rgba(124,58,237,.17);
+}
+
+.popular{
+  position:absolute;
+  top:-13px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#7c3aed;
+  padding:6px 15px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.plan{
+  color:#aab4c7;
+  font-weight:bold;
+}
+
+.price{
+  font-size:38px;
+  font-weight:900;
+  margin-top:10px;
+}
+
+.period{
+  color:#727e94;
+  font-size:14px;
+}
+
+ul{
+  padding:0;
+  list-style:none;
+}
+
+li{
+  margin:14px 0;
+  color:#d6dce8;
+}
+
+li:before{
+  content:"✓";
+  color:#34d399;
+  font-weight:bold;
+  margin-right:9px;
+}
+
+.payment{
+  text-align:center;
+  margin:40px 0;
+  padding:32px;
+  border-radius:23px;
+  background:rgba(255,255,255,.035);
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.payment p{
+  color:#a5afc1;
+  line-height:1.6;
+}
+
+.email{
+  color:#c4b5fd;
+  font-size:18px;
+  font-weight:900;
+}
+
+.code-area{
+  text-align:center;
+  padding:30px 0 90px;
+}
+
+.code-link{
+  background:none;
+  border:0;
+  color:#8995aa;
+  text-decoration:underline;
+}
+
+footer{
+  text-align:center;
+  color:#667289;
+  border-top:1px solid rgba(255,255,255,.07);
+  padding:30px;
+}
+
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:rgba(0,0,0,.84);
+  backdrop-filter:blur(12px);
+}
+
+.modal-box{
+  width:min(430px,100%);
+  padding:30px;
+  border-radius:24px;
+  background:#101625;
+  border:1px solid rgba(255,255,255,.1);
+}
+
+.close{
+  float:right;
+  background:none;
+  border:0;
+  color:#9aa5b9;
+  font-size:28px;
+}
+
+.modal-box h2{
+  margin-top:0;
+}
+
+.modal-box p{
+  color:#a5afc1;
+  line-height:1.5;
+}
+
+input{
+  width:100%;
+  padding:14px;
+  margin:6px 0;
+  border-radius:11px;
+  border:1px solid rgba(255,255,255,.1);
+  background:#080d18;
+  color:#fff;
+  outline:none;
+}
+
+input:focus{
+  border-color:#7c3aed;
+}
+
+.modal-submit{
+  width:100%;
+  margin-top:10px;
+  padding:14px;
+  border:0;
+  border-radius:11px;
+  background:linear-gradient(135deg,#7c3aed,#4f46e5);
+  color:#fff;
+  font-weight:900;
+}
+
+.switch{
+  text-align:center;
+  color:#929db1;
+  margin-top:16px;
+  font-size:14px;
+}
+
+.switch button{
+  border:0;
+  background:none;
+  color:#b9a7ff;
+}
+
+.message{
+  min-height:22px;
+  margin-top:10px;
+  font-size:13px;
+}
+
+.error{
+  color:#fb7185;
+}
+
+.success{
+  color:#34d399;
+}
+
+#app{
+  display:none;
+  text-align:center;
+  min-height:80vh;
+  padding:100px 15px;
+}
+
+.premium{
+  display:inline-block;
+  padding:8px 15px;
+  border-radius:999px;
+  color:#a7f3d0;
+  background:rgba(52,211,153,.08);
+  border:1px solid rgba(52,211,153,.2);
+}
+
+#app h1{
+  font-size:clamp(42px,7vw,70px);
+  margin:22px 0 10px;
+}
+
+.app-subtitle{
+  color:#a4aec0;
+}
+
+#callButton{
+  width:170px;
+  height:170px;
+  margin:42px 0 22px;
+  border-radius:50%;
+  border:1px solid rgba(139,92,246,.65);
+  background:radial-gradient(circle at 35% 25%,#5b21b6,#111827 70%);
+  color:white;
+  font-size:55px;
+  box-shadow:0 0 80px rgba(124,58,237,.25);
+  transition:.2s;
+}
+
+#callButton:hover{
+  transform:scale(1.05);
+}
+
+#callButton.active{
+  border-color:#22d3ee;
+  box-shadow:0 0 100px rgba(34,211,238,.4);
+}
+
+#status{
+  color:#9ba6b9;
+  min-height:24px;
+}
+
+@media(max-width:850px){
+
+  .features{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .pricing{
+    grid-template-columns:1fr;
+    max-width:500px;
+    margin:auto;
+  }
+}
+
+@media(max-width:550px){
+
+  .features{
+    grid-template-columns:1fr;
+  }
+
+  .nav-actions .secondary{
+    display:none;
+  }
+
+  .hero h1{
+    letter-spacing:-2px;
+  }
+}
+</style>
 </head>
 
 <body>
 
 <div id="landing">
 
-  <div class="container">
+<div class="container">
 
-    <nav>
+<nav>
 
-      <div class="logo">
-        AI <span>Angoltanár</span>
-      </div>
+<div class="logo">
+AI <span>Angoltanár</span>
+</div>
 
-      <div class="nav-buttons">
+<div class="nav-actions">
 
-        <button
-          class="btn btn-secondary"
-          onclick="openModal('loginModal')">
-          Bejelentkezés
-        </button>
+<button
+class="btn secondary"
+onclick="openModal('loginModal')">
+Bejelentkezés
+</button>
 
-        <button
-          class="btn btn-primary"
-          onclick="openModal('registerModal')">
-          Regisztráció
-        </button>
+<button
+class="btn primary"
+onclick="openModal('registerModal')">
+Regisztráció
+</button>
 
-      </div>
+</div>
 
-    </nav>
-
-
-    <section class="hero">
-
-      <div class="badge">
-        ✨ Személyes AI angoltanár
-      </div>
-
-      <h1>
-        Beszélj angolul.<br>
-        <span class="gradient">Magabiztosan.</span>
-      </h1>
-
-      <p>
-        Gyakorold az angol beszédet egy intelligens AI-tanárral.
-        Beszélgess természetesen, fejleszd a szókincsedet,
-        és válj magabiztosabb angol beszélővé.
-      </p>
-
-      <button
-        class="btn btn-primary"
-        style="margin-top:30px"
-        onclick="openModal('registerModal')">
-
-        🚀 Kezdés most
-
-      </button>
-
-    </section>
+</nav>
 
 
-    <h2 class="section-title">
-      Amit kapsz
-    </h2>
+<section class="hero">
 
-    <section class="features">
+<div class="badge">
+✨ Személyes AI angoltanár
+</div>
 
-      <div class="card">
-        <div class="feature-icon">🎙️</div>
-        <h3>AI beszélgetés</h3>
-        <p>
-          Beszélgess természetesen a saját AI angoltanároddal.
-        </p>
-      </div>
+<h1>
+Beszélj angolul.<br>
+<span class="gradient">Magabiztosan.</span>
+</h1>
 
-      <div class="card">
-        <div class="feature-icon">🗣️</div>
-        <h3>Beszédgyakorlás</h3>
-        <p>
-          Gyakorold az angol kommunikációt valódi hangalapú beszélgetésekkel.
-        </p>
-      </div>
+<p>
+Gyakorold az angol beszédet egy intelligens AI-tanárral.
+Beszélgess természetesen, fejleszd a szókincsedet,
+és válj magabiztosabb angol beszélővé.
+</p>
 
-      <div class="card">
-        <div class="feature-icon">📚</div>
-        <h3>Angol fejlesztés</h3>
-        <p>
-          Fejleszd a szókincsedet és a kommunikációs készségedet.
-        </p>
-      </div>
+<button
+class="btn primary"
+style="margin-top:30px"
+onclick="openModal('registerModal')">
+🚀 Kezdés most
+</button>
 
-      <div class="card">
-        <div class="feature-icon">🤖</div>
-        <h3>Személyes AI-tanár</h3>
-        <p>
-          Gyakorolj akkor, amikor csak szeretnél.
-        </p>
-      </div>
-
-    </section>
+</section>
 
 
-    <h2 class="section-title">
-      Válaszd ki a csomagod
-    </h2>
+<h2 class="section-title">
+Amit kapsz
+</h2>
 
-    <section class="pricing">
+<section class="features">
 
-      <div class="price-card">
+<div class="card">
+<div class="icon">🎙️</div>
+<h3>AI beszélgetés</h3>
+<p>
+Beszélgess természetesen a saját AI angoltanároddal.
+</p>
+</div>
 
-        <div class="plan">
-          Hó
-        </div>
+<div class="card">
+<div class="icon">🗣️</div>
+<h3>Beszédgyakorlás</h3>
+<p>
+Gyakorold az angol kommunikációt valódi hangalapú beszélgetésekkel.
+</p>
+</div>
 
-        <div class="price">
-          3 550 Ft
-        </div>
+<div class="card">
+<div class="icon">📚</div>
+<h3>Angol fejlesztés</h3>
+<p>
+Fejleszd a szókincsedet és kommunikációs készségedet.
+</p>
+</div>
 
-        <div class="period">
-          1 hónap
-        </div>
+<div class="card">
+<div class="icon">🤖</div>
+<h3>Személyes AI-tanár</h3>
+<p>
+Gyakorolj akkor, amikor csak szeretnél.
+</p>
+</div>
 
-        <ul>
-          <li>AI angol beszélgetés</li>
-          <li>Beszédgyakorlás</li>
-          <li>Angol nyelvgyakorlás</li>
-          <li>Személyes AI-tanár</li>
-        </ul>
-
-      </div>
-
-
-      <div class="price-card popular">
-
-        <div class="popular-label">
-          LEGKEDVELTEBB
-        </div>
-
-        <div class="plan">
-          Év
-        </div>
-
-        <div class="price">
-          35 500 Ft
-        </div>
-
-        <div class="period">
-          1 év
-        </div>
-
-        <ul>
-          <li>AI angol beszélgetés</li>
-          <li>Beszédgyakorlás</li>
-          <li>Angol nyelvgyakorlás</li>
-          <li>Személyes AI-tanár</li>
-        </ul>
-
-      </div>
+</section>
 
 
-      <div class="price-card">
+<h2 class="section-title">
+Válaszd ki a csomagod
+</h2>
 
-        <div class="plan">
-          4 év
-        </div>
+<section class="pricing">
 
-        <div class="price">
-          106 500 Ft
-        </div>
+<div class="price-card">
 
-        <div class="period">
-          4 év
-        </div>
+<div class="plan">Hó</div>
 
-        <ul>
-          <li>AI angol beszélgetés</li>
-          <li>Beszédgyakorlás</li>
-          <li>Angol nyelvgyakorlás</li>
-          <li>Személyes AI-tanár</li>
-        </ul>
+<div class="price">
+3 550 Ft
+</div>
 
-      </div>
+<div class="period">
+1 hónap
+</div>
 
-    </section>
-
-
-    <div class="payment">
-
-      <h3>
-        💳 Fizetés
-      </h3>
-
-      <p>
-        Írj e-mailt, írd meg, melyik csomagot szeretnéd,
-        és elküldjük a Revolut fizetéshez szükséges adatokat.
-      </p>
-
-      <div class="email">
-        ai-angoltanar@elderprogrammer.hu
-      </div>
-
-      <p>
-        A fizetés után megkapod a hozzáférési kódodat.
-      </p>
-
-    </div>
-
-
-    <div class="code-area">
-
-      <button
-        class="code-link"
-        onclick="openModal('codeModal')">
-
-        Van hozzáférési kódod?
-        → Kód megadása
-
-      </button>
-
-    </div>
-
-  </div>
+<ul>
+<li>AI angol beszélgetés</li>
+<li>Beszédgyakorlás</li>
+<li>Angol nyelvgyakorlás</li>
+<li>Személyes AI-tanár</li>
+</ul>
 
 </div>
 
 
-<!-- APP -->
+<div class="price-card popular">
+
+<div class="popular">
+LEGKEDVELTEBB
+</div>
+
+<div class="plan">Év</div>
+
+<div class="price">
+35 500 Ft
+</div>
+
+<div class="period">
+1 év
+</div>
+
+<ul>
+<li>AI angol beszélgetés</li>
+<li>Beszédgyakorlás</li>
+<li>Angol nyelvgyakorlás</li>
+<li>Személyes AI-tanár</li>
+</ul>
+
+</div>
+
+
+<div class="price-card">
+
+<div class="plan">4 év</div>
+
+<div class="price">
+106 500 Ft
+</div>
+
+<div class="period">
+4 év
+</div>
+
+<ul>
+<li>AI angol beszélgetés</li>
+<li>Beszédgyakorlás</li>
+<li>Angol nyelvgyakorlás</li>
+<li>Személyes AI-tanár</li>
+</ul>
+
+</div>
+
+</section>
+
+
+<div class="payment">
+
+<h3>💳 Fizetés</h3>
+
+<p>
+Írj e-mailt, írd meg, melyik csomagot szeretnéd,
+és elküldjük a Revolut fizetéshez szükséges adatokat.
+</p>
+
+<div class="email">
+ai-angoltanar@elderprogrammer.hu
+</div>
+
+<p>
+A fizetés után megkapod a hozzáférési kódodat.
+</p>
+
+</div>
+
+
+<div class="code-area">
+
+<button
+class="code-link"
+onclick="openModal('codeModal')">
+Van hozzáférési kódod? → Kód megadása
+</button>
+
+</div>
+
+</div>
+
+</div>
+
 
 <section id="app">
 
-  <div class="premium">
-    ● Premium hozzáférés aktív
-  </div>
+<div class="premium">
+● Premium hozzáférés aktív
+</div>
 
-  <h1>
-    Készen állsz?
-  </h1>
+<h1>
+Készen állsz?
+</h1>
 
-  <p class="app-subtitle">
-    Nyomd meg a gombot és kezdj el beszélni az AI angoltanárral.
-  </p>
+<p class="app-subtitle">
+Nyomd meg a gombot és kezdj el beszélni az AI angoltanárral.
+</p>
 
-  <button id="callButton">
-    🎙️
-  </button>
+<button id="callButton">
+🎙️
+</button>
 
-  <div id="status">
-    Készen állok.
-  </div>
+<div id="status">
+AI betöltése...
+</div>
 
-  <br>
+<br>
 
-  <button
-    class="btn btn-secondary"
-    onclick="showLanding()">
-
-    ← Vissza
-
-  </button>
+<button
+class="btn secondary"
+onclick="showLanding()">
+← Vissza
+</button>
 
 </section>
 
 
 <footer>
-  © 2026 AI Angoltanár
+© 2026 AI Angoltanár
 </footer>
 
 
@@ -699,60 +677,42 @@
 
 <div class="modal" id="loginModal">
 
-  <div class="modal-box">
+<div class="modal-box">
 
-    <button
-      class="close"
-      onclick="closeModals()">
-      ×
-    </button>
+<button class="close" onclick="closeModals()">×</button>
 
-    <h2>
-      Üdv újra! 👋
-    </h2>
+<h2>Üdv újra! 👋</h2>
 
-    <p>
-      Jelentkezz be az AI angoltanárodhoz.
-    </p>
+<p>
+Jelentkezz be az AI angoltanárodhoz.
+</p>
 
-    <input
-      id="loginEmail"
-      type="email"
-      placeholder="Email cím">
+<input
+id="loginEmail"
+type="email"
+placeholder="Email cím">
 
-    <input
-      id="loginPassword"
-      type="password"
-      placeholder="Jelszó">
+<input
+id="loginPassword"
+type="password"
+placeholder="Jelszó">
 
-    <button
-      class="modal-submit"
-      onclick="login()">
+<button
+class="modal-submit"
+onclick="login()">
+Belépés
+</button>
 
-      Belépés
+<div id="loginMessage" class="message"></div>
 
-    </button>
+<div class="switch">
+Nincs még fiókod?
+<button onclick="switchModal('loginModal','registerModal')">
+Regisztráció
+</button>
+</div>
 
-    <div
-      id="loginMessage"
-      class="message">
-    </div>
-
-    <div class="switch">
-
-      Nincs még fiókod?
-
-      <button
-        onclick="switchModal('loginModal','registerModal')">
-
-        Regisztráció
-
-      </button>
-
-    </div>
-
-  </div>
-
+</div>
 </div>
 
 
@@ -760,70 +720,52 @@
 
 <div class="modal" id="registerModal">
 
-  <div class="modal-box">
+<div class="modal-box">
 
-    <button
-      class="close"
-      onclick="closeModals()">
-      ×
-    </button>
+<button class="close" onclick="closeModals()">×</button>
 
-    <h2>
-      Fiók létrehozása ✨
-    </h2>
+<h2>Fiók létrehozása ✨</h2>
 
-    <p>
-      Regisztrálj az AI angoltanár használatához.
-    </p>
+<p>
+Regisztrálj az AI angoltanár használatához.
+</p>
 
-    <input
-      id="regName"
-      type="text"
-      placeholder="Név">
+<input
+id="regName"
+type="text"
+placeholder="Név">
 
-    <input
-      id="regEmail"
-      type="email"
-      placeholder="Email cím">
+<input
+id="regEmail"
+type="email"
+placeholder="Email cím">
 
-    <input
-      id="regPassword"
-      type="password"
-      placeholder="Jelszó">
+<input
+id="regPassword"
+type="password"
+placeholder="Jelszó">
 
-    <input
-      id="regPassword2"
-      type="password"
-      placeholder="Jelszó megerősítése">
+<input
+id="regPassword2"
+type="password"
+placeholder="Jelszó megerősítése">
 
-    <button
-      class="modal-submit"
-      onclick="register()">
+<button
+class="modal-submit"
+onclick="register()">
+Regisztráció
+</button>
 
-      Regisztráció
+<div id="registerMessage" class="message"></div>
 
-    </button>
+<div class="switch">
+Van már fiókod?
+<button onclick="switchModal('registerModal','loginModal')">
+Bejelentkezés
+</button>
+</div>
 
-    <div
-      id="registerMessage"
-      class="message">
-    </div>
-
-    <div class="switch">
-
-      Van már fiókod?
-
-      <button
-        onclick="switchModal('registerModal','loginModal')">
-
-        Bejelentkezés
-
-      </button>
-
-    </div>
-
-  </div>
-
+</div>
 </div>
 
 
@@ -831,825 +773,794 @@
 
 <div class="modal" id="codeModal">
 
-  <div class="modal-box">
+<div class="modal-box">
 
-    <button
-      class="close"
-      onclick="closeModals()">
-      ×
-    </button>
+<button class="close" onclick="closeModals()">×</button>
 
-    <h2>
-      🔑 Hozzáférési kód
-    </h2>
+<h2>🔑 Hozzáférési kód</h2>
 
-    <p>
-      Írd be a kapott hozzáférési kódot.
-    </p>
+<p>
+Írd be a kapott hozzáférési kódot.
+</p>
 
-    <input
-      id="accessCode"
-      type="text"
-      inputmode="numeric"
-      placeholder="Kód">
+<input
+id="accessCode"
+type="text"
+inputmode="numeric"
+placeholder="Kód">
 
-    <button
-      class="modal-submit"
-      onclick="activateCode()">
+<button
+class="modal-submit"
+onclick="activateCode()">
+Aktiválás
+</button>
 
-      Aktiválás
+<div id="codeMessage" class="message"></div>
 
-    </button>
-
-    <div
-      id="codeMessage"
-      class="message">
-    </div>
-
-  </div>
-
+</div>
 </div>
 
 
 <!-- =====================================================
-     VAPI
+VAPI
 ===================================================== -->
 
 <script>
 
-  /*
-   * VAPI ADATOK
-   *
-   * Ez PUBLIC API KEY.
-   * Private API Key-t NEM használunk böngészőben.
-   */
+/*
+ VAPI
 
-  const VAPI_PUBLIC_KEY =
-    "e6ed27b0-b0d1-4ae1-9e77-f2b1b9fe351d";
+ Public API Key:
+ e6ed27b0-b0d1-4ae1-9e77-f2b1b9fe351d
 
+ Assistant ID:
+ 90df3af1-afcd-4120-9767-10bbe0090060
+*/
 
-  /*
-   * EZ AZ ASSISTANT ID
-   */
+const VAPI_PUBLIC_KEY =
+"e6ed27b0-b0d1-4ae1-9e77-f2b1b9fe351d";
 
-  const ASSISTANT_ID =
-    "90df3af1-afcd-4120-9767-10bbe0090060";
+const ASSISTANT_ID =
+"90df3af1-afcd-4120-9767-10bbe0090060";
 
+let vapiInstance = null;
+let callActive = false;
+let vapiReady = false;
 
-  let vapiInstance = null;
-  let callActive = false;
 
+/* VAPI SCRIPT BETÖLTÉSE */
 
-  /*
-   * VAPI HTML SDK
-   */
+(function(d,t){
 
-  (function (d, t) {
+const g=d.createElement(t);
+const s=d.getElementsByTagName(t)[0];
 
-    const g = d.createElement(t);
-    const s = d.getElementsByTagName(t)[0];
+g.src=
+"https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
 
-    g.src =
-      "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
+g.defer=true;
+g.async=true;
 
-    g.defer = true;
-    g.async = true;
+s.parentNode.insertBefore(g,s);
 
-    s.parentNode.insertBefore(g, s);
+g.onload=function(){
 
+console.log("Vapi SDK betöltve.");
 
-    g.onload = function () {
+try{
 
-      console.log(
-        "Vapi SDK betöltve."
-      );
+if(!window.vapiSDK){
 
+console.error("Vapi SDK nem található.");
 
-      if (!window.vapiSDK) {
+setStatus(
+"Az AI SDK nem töltődött be."
+);
 
-        console.error(
-          "window.vapiSDK nem található."
-        );
+return;
+}
 
-        return;
 
-      }
+/*
+ A Vapi HTML widget hivatalos
+ inicializálási módja.
+*/
 
+vapiInstance=
+window.vapiSDK.run({
 
-      try {
+apiKey:VAPI_PUBLIC_KEY,
 
-        vapiInstance =
-          window.vapiSDK.run({
+assistant:ASSISTANT_ID,
 
-            apiKey:
-              VAPI_PUBLIC_KEY,
+config:{}
 
-            assistant:
-              ASSISTANT_ID,
+});
 
-            config: {}
 
-          });
+vapiReady=true;
 
+console.log("Vapi inicializálva.");
 
-        console.log(
-          "Vapi inicializálva."
-        );
+setStatus(
+"AI készen áll. 🎙️"
+);
 
 
-        if (
-          vapiInstance &&
-          typeof vapiInstance.on === "function"
-        ) {
+/* EVENTS */
 
-          vapiInstance.on(
-            "call-start",
-            function () {
+if(
+vapiInstance &&
+typeof vapiInstance.on==="function"
+){
 
-              console.log(
-                "Vapi call-start"
-              );
+vapiInstance.on(
+"call-start",
+function(){
 
-              callActive = true;
+callActive=true;
 
-              document
-                .getElementById("callButton")
-                .classList.add("active");
+document
+.getElementById("callButton")
+.classList.add("active");
 
-              document
-                .getElementById("status")
-                .textContent =
-                "Beszélgetés folyamatban… 🎙️";
+setStatus(
+"Beszélgetés folyamatban... 🎙️"
+);
 
-            }
-          );
+}
+);
 
 
-          vapiInstance.on(
-            "call-end",
-            function () {
+vapiInstance.on(
+"call-end",
+function(){
 
-              console.log(
-                "Vapi call-end"
-              );
+callActive=false;
 
-              callActive = false;
+document
+.getElementById("callButton")
+.classList.remove("active");
 
-              document
-                .getElementById("callButton")
-                .classList.remove("active");
+setStatus(
+"Beszélgetés véget ért."
+);
 
-              document
-                .getElementById("status")
-                .textContent =
-                "Beszélgetés véget ért.";
+}
+);
 
-            }
-          );
 
+vapiInstance.on(
+"error",
+function(error){
 
-          vapiInstance.on(
-            "error",
-            function (error) {
+console.error(
+"VAPI ERROR:",
+error
+);
 
-              console.error(
-                "VAPI ERROR:",
-                error
-              );
+console.error(
+"VAPI ERROR JSON:",
+safeJSON(error)
+);
 
-              callActive = false;
+callActive=false;
 
-              document
-                .getElementById("callButton")
-                .classList.remove("active");
+document
+.getElementById("callButton")
+.classList.remove("active");
 
-              document
-                .getElementById("status")
-                .textContent =
-                "Vapi hiba történt. Nézd meg az F12 Console-t.";
+setStatus(
+"Vapi hiba. Ellenőrizd az Assistant ID-t és a Public API Key jogosultságait."
+);
 
-            }
-          );
+}
+);
 
-        }
+}
 
-      } catch (error) {
+}catch(error){
 
-        console.error(
-          "Vapi inicializálási hiba:",
-          error
-        );
+console.error(
+"Vapi inicializálási hiba:",
+error
+);
 
-      }
+setStatus(
+"Nem sikerült betölteni az AI-t."
+);
 
-    };
+}
 
+};
 
-    g.onerror = function () {
+g.onerror=function(){
 
-      console.error(
-        "Vapi SDK betöltési hiba."
-      );
+console.error(
+"Vapi SDK betöltési hiba."
+);
 
-    };
+setStatus(
+"Nem sikerült betölteni az AI-t."
+);
 
-  })(document, "script");
+};
 
+})(document,"script");
 
-  /* =====================================================
-     TESZT HOZZÁFÉRÉSI KÓDOK
-  ===================================================== */
 
-  const ACCESS_CODES = {
+function safeJSON(value){
 
-    "1122": 30,
+try{
 
-    "638300": 365,
+return JSON.stringify(
+value,
+Object.getOwnPropertyNames(value),
+2
+);
 
-    "20121213": 1460
+}catch(e){
 
-  };
+return String(value);
 
+}
 
-  let currentUser =
-    JSON.parse(
-      localStorage.getItem(
-        "aiTeacherUser"
-      ) || "null"
-    );
+}
 
 
-  let usedCodes =
-    JSON.parse(
-      localStorage.getItem(
-        "aiTeacherUsedCodes"
-      ) || "[]"
-    );
+function setStatus(text){
 
+const el=
+document.getElementById("status");
 
-  /* =====================================================
-     MODAL
-  ===================================================== */
+if(el){
+el.textContent=text;
+}
 
-  function openModal(id) {
+}
 
-    closeModals();
 
-    document
-      .getElementById(id)
-      .style.display = "flex";
+/* =====================================================
+ HOZZÁFÉRÉSI KÓDOK
+===================================================== */
 
-  }
+const ACCESS_CODES={
 
+"1122":30,
 
-  function closeModals() {
+"638300":365,
 
-    document
-      .querySelectorAll(".modal")
-      .forEach(
-        modal =>
-          modal.style.display = "none"
-      );
+"20121213":1460
 
-  }
+};
 
 
-  function switchModal(a,b) {
+let currentUser=
+JSON.parse(
+localStorage.getItem("aiTeacherUser")||"null"
+);
 
-    document
-      .getElementById(a)
-      .style.display = "none";
 
-    document
-      .getElementById(b)
-      .style.display = "flex";
+let usedCodes=
+JSON.parse(
+localStorage.getItem("aiTeacherUsedCodes")||"[]"
+);
 
-  }
 
+/* =====================================================
+ MODAL
+===================================================== */
 
-  /* =====================================================
-     REGISZTRÁCIÓ
-  ===================================================== */
+function openModal(id){
 
-  function register() {
+closeModals();
 
-    const name =
-      document
-        .getElementById("regName")
-        .value
-        .trim();
+document
+.getElementById(id)
+.style.display="flex";
 
-    const email =
-      document
-        .getElementById("regEmail")
-        .value
-        .trim()
-        .toLowerCase();
+}
 
-    const password =
-      document
-        .getElementById("regPassword")
-        .value;
 
-    const password2 =
-      document
-        .getElementById("regPassword2")
-        .value;
+function closeModals(){
 
-    const message =
-      document.getElementById(
-        "registerMessage"
-      );
+document
+.querySelectorAll(".modal")
+.forEach(
+m=>m.style.display="none"
+);
 
+}
 
-    if (
-      !name ||
-      !email ||
-      !password ||
-      !password2
-    ) {
 
-      message.className =
-        "message error";
+function switchModal(a,b){
 
-      message.textContent =
-        "Tölts ki minden mezőt.";
+document
+.getElementById(a)
+.style.display="none";
 
-      return;
+document
+.getElementById(b)
+.style.display="flex";
 
-    }
+}
 
 
-    if (password.length < 6) {
+/* =====================================================
+ REGISZTRÁCIÓ
+===================================================== */
 
-      message.className =
-        "message error";
+function register(){
 
-      message.textContent =
-        "A jelszó legalább 6 karakter legyen.";
+const name=
+document
+.getElementById("regName")
+.value.trim();
 
-      return;
+const email=
+document
+.getElementById("regEmail")
+.value.trim()
+.toLowerCase();
 
-    }
+const password=
+document
+.getElementById("regPassword")
+.value;
 
+const password2=
+document
+.getElementById("regPassword2")
+.value;
 
-    if (password !== password2) {
+const message=
+document.getElementById(
+"registerMessage"
+);
 
-      message.className =
-        "message error";
 
-      message.textContent =
-        "A két jelszó nem egyezik.";
+if(!name||!email||!password||!password2){
 
-      return;
+message.className="message error";
+message.textContent=
+"Tölts ki minden mezőt.";
 
-    }
+return;
 
+}
 
-    currentUser = {
 
-      name,
-      email,
-      password,
-      premiumUntil: null
+if(!email.includes("@")){
 
-    };
+message.className="message error";
+message.textContent=
+"Adj meg érvényes email címet.";
 
+return;
 
-    localStorage.setItem(
-      "aiTeacherUser",
-      JSON.stringify(currentUser)
-    );
+}
 
 
-    message.className =
-      "message success";
+if(password.length<6){
 
-    message.textContent =
-      "Sikeres regisztráció!";
+message.className="message error";
+message.textContent=
+"A jelszó legalább 6 karakter legyen.";
 
+return;
 
-    setTimeout(
-      () => {
+}
 
-        closeModals();
 
-        openModal(
-          "codeModal"
-        );
+if(password!==password2){
 
-      },
-      600
-    );
+message.className="message error";
+message.textContent=
+"A két jelszó nem egyezik.";
 
-  }
+return;
 
+}
 
-  /* =====================================================
-     LOGIN
-  ===================================================== */
 
-  function login() {
+currentUser={
 
-    const email =
-      document
-        .getElementById("loginEmail")
-        .value
-        .trim()
-        .toLowerCase();
+name:name,
 
-    const password =
-      document
-        .getElementById("loginPassword")
-        .value;
+email:email,
 
-    const message =
-      document.getElementById(
-        "loginMessage"
-      );
+password:password,
 
+premiumUntil:null
 
-    if (!currentUser) {
+};
 
-      message.className =
-        "message error";
 
-      message.textContent =
-        "Nincs még regisztrált fiókod.";
+localStorage.setItem(
+"aiTeacherUser",
+JSON.stringify(currentUser)
+);
 
-      return;
 
-    }
+message.className="message success";
+message.textContent=
+"Sikeres regisztráció!";
 
 
-    if (
-      email === currentUser.email &&
-      password === currentUser.password
-    ) {
+setTimeout(function(){
 
-      message.className =
-        "message success";
+closeModals();
 
-      message.textContent =
-        "Sikeres belépés!";
+openModal("codeModal");
 
+},700);
 
-      setTimeout(
-        () => {
+}
 
-          closeModals();
 
+/* =====================================================
+ LOGIN
+===================================================== */
 
-          if (hasPremium()) {
+function login(){
 
-            showApp();
+const email=
+document
+.getElementById("loginEmail")
+.value.trim()
+.toLowerCase();
 
-          } else {
+const password=
+document
+.getElementById("loginPassword")
+.value;
 
-            openModal(
-              "codeModal"
-            );
+const message=
+document.getElementById(
+"loginMessage"
+);
 
-          }
 
-        },
-        500
-      );
+if(!currentUser){
 
+message.className="message error";
+message.textContent=
+"Nincs még regisztrált fiókod.";
 
-    } else {
+return;
 
-      message.className =
-        "message error";
+}
 
-      message.textContent =
-        "Hibás email vagy jelszó.";
 
-    }
+if(
+email===currentUser.email &&
+password===currentUser.password
+){
 
-  }
+message.className="message success";
+message.textContent=
+"Sikeres belépés!";
 
 
-  /* =====================================================
-     KÓD
-  ===================================================== */
+setTimeout(function(){
 
-  function activateCode() {
+closeModals();
 
-    const code =
-      document
-        .getElementById(
-          "accessCode"
-        )
-        .value
-        .trim();
+if(hasPremium()){
 
-    const message =
-      document.getElementById(
-        "codeMessage"
-      );
+showApp();
 
+}else{
 
-    if (!currentUser) {
+openModal("codeModal");
 
-      message.className =
-        "message error";
+}
 
-      message.textContent =
-        "Előbb regisztrálj.";
+},500);
 
-      return;
 
-    }
+}else{
 
+message.className="message error";
+message.textContent=
+"Hibás email vagy jelszó.";
 
-    if (!ACCESS_CODES[code]) {
+}
 
-      message.className =
-        "message error";
+}
 
-      message.textContent =
-        "Érvénytelen kód.";
 
-      return;
+/* =====================================================
+ KÓD AKTIVÁLÁS
+===================================================== */
 
-    }
+function activateCode(){
 
+const code=
+document
+.getElementById("accessCode")
+.value.trim();
 
-    /*
-     * Frontend demo.
-     *
-     * Fontos:
-     * Ez még nem valódi szerveroldali
-     * egyszer használatos kód.
-     */
+const message=
+document.getElementById(
+"codeMessage"
+);
 
-    if (usedCodes.includes(code)) {
 
-      message.className =
-        "message error";
+if(!currentUser){
 
-      message.textContent =
-        "Ez a kód ezen a böngészőn már fel lett használva.";
+message.className="message error";
+message.textContent=
+"Előbb regisztrálj vagy jelentkezz be.";
 
-      return;
+return;
 
-    }
+}
 
 
-    const days =
-      ACCESS_CODES[code];
+if(!ACCESS_CODES[code]){
 
+message.className="message error";
+message.textContent=
+"Érvénytelen kód.";
 
-    const now =
-      new Date();
+return;
 
+}
 
-    let expiry =
-      currentUser.premiumUntil
-        ? new Date(
-            currentUser.premiumUntil
-          )
-        : now;
 
+/*
+ Ez a verzió ugyanazt a kódot
+ csak egyszer engedi használni
+ ebben a böngészőben.
+*/
 
-    const start =
-      expiry > now
-        ? expiry
-        : now;
+if(usedCodes.includes(code)){
 
+message.className="message error";
+message.textContent=
+"Ez a kód már fel lett használva ezen a böngészőn.";
 
-    start.setDate(
-      start.getDate() + days
-    );
+return;
 
+}
 
-    currentUser.premiumUntil =
-      start.toISOString();
 
+const days=
+ACCESS_CODES[code];
 
-    usedCodes.push(code);
+const now=
+new Date();
 
+let start=now;
 
-    localStorage.setItem(
-      "aiTeacherUser",
-      JSON.stringify(currentUser)
-    );
+if(
+currentUser.premiumUntil &&
+new Date(currentUser.premiumUntil)>now
+){
 
+start=
+new Date(
+currentUser.premiumUntil
+);
 
-    localStorage.setItem(
-      "aiTeacherUsedCodes",
-      JSON.stringify(usedCodes)
-    );
+}
 
 
-    message.className =
-      "message success";
+start.setDate(
+start.getDate()+days
+);
 
-    message.textContent =
-      "Sikeres aktiválás!";
 
+currentUser.premiumUntil=
+start.toISOString();
 
-    setTimeout(
-      () => {
 
-        closeModals();
+usedCodes.push(code);
 
-        showApp();
 
-      },
-      700
-    );
+localStorage.setItem(
+"aiTeacherUser",
+JSON.stringify(currentUser)
+);
 
-  }
+localStorage.setItem(
+"aiTeacherUsedCodes",
+JSON.stringify(usedCodes)
+);
 
 
-  /* =====================================================
-     PREMIUM
-  ===================================================== */
+message.className="message success";
+message.textContent=
+"Sikeres aktiválás!";
 
-  function hasPremium() {
 
-    return !!(
-      currentUser &&
-      currentUser.premiumUntil &&
-      new Date(
-        currentUser.premiumUntil
-      ) > new Date()
-    );
+setTimeout(function(){
 
-  }
+closeModals();
 
+showApp();
 
-  /* =====================================================
-     APP
-  ===================================================== */
+},700);
 
-  function showApp() {
+}
 
-    document
-      .getElementById("landing")
-      .style.display = "none";
 
-    document
-      .getElementById("app")
-      .style.display = "block";
+/* =====================================================
+ PREMIUM
+===================================================== */
 
-    window.scrollTo(0,0);
+function hasPremium(){
 
-  }
+return !!(
+currentUser &&
+currentUser.premiumUntil &&
+new Date(currentUser.premiumUntil)>new Date()
+);
 
+}
 
-  function showLanding() {
 
-    document
-      .getElementById("app")
-      .style.display = "none";
+/* =====================================================
+ APP
+===================================================== */
 
-    document
-      .getElementById("landing")
-      .style.display = "block";
+function showApp(){
 
-    window.scrollTo(0,0);
+document
+.getElementById("landing")
+.style.display="none";
 
-  }
+document
+.getElementById("app")
+.style.display="block";
 
+window.scrollTo(0,0);
 
-  /* =====================================================
-     AI INDÍTÁSA
-  ===================================================== */
+}
 
-  document
-    .getElementById("callButton")
-    .addEventListener(
-      "click",
-      async function () {
 
-        if (!hasPremium()) {
+function showLanding(){
 
-          alert(
-            "Nincs aktív Premium hozzáférésed."
-          );
+document
+.getElementById("app")
+.style.display="none";
 
-          return;
+document
+.getElementById("landing")
+.style.display="block";
 
-        }
+window.scrollTo(0,0);
 
+}
 
-        if (!vapiInstance) {
 
-          document
-            .getElementById("status")
-            .textContent =
-            "Az AI még töltődik...";
+/* =====================================================
+ AI BESZÉLGETÉS
+===================================================== */
 
-          return;
+document
+.getElementById("callButton")
+.addEventListener(
+"click",
+async function(){
 
-        }
+if(!hasPremium()){
 
+alert(
+"Nincs aktív Premium hozzáférésed."
+);
 
-        try {
+return;
 
-          if (!callActive) {
+}
 
-            console.log(
-              "AI beszélgetés indítása..."
-            );
 
+if(!vapiReady||!vapiInstance){
 
-            document
-              .getElementById("status")
-              .textContent =
-              "AI indítása… 🎙️";
+setStatus(
+"Az AI még töltődik..."
+);
 
+return;
 
-            /*
-             * A VAPI hivatalos Web SDK
-             * dokumentációja szerint:
-             *
-             * vapi.start("ASSISTANT_ID")
-             */
+}
 
-            const result =
-              vapiInstance.start(
-                ASSISTANT_ID
-              );
 
+try{
 
-            if (
-              result &&
-              typeof result.catch ===
-              "function"
-            ) {
+if(!callActive){
 
-              result.catch(
-                function(error) {
+setStatus(
+"AI indítása... 🎙️"
+);
 
-                  console.error(
-                    "Vapi start error:",
-                    error
-                  );
 
+/*
+ A Vapi Web SDK hivatalos
+ indítási módja.
+*/
 
-                  callActive = false;
+const result=
+vapiInstance.start(
+ASSISTANT_ID
+);
 
 
-                  document
-                    .getElementById(
-                      "callButton"
-                    )
-                    .classList
-                    .remove("active");
+if(
+result &&
+typeof result.catch==="function"
+){
 
+result.catch(function(error){
 
-                  document
-                    .getElementById(
-                      "status"
-                    )
-                    .textContent =
-                    "Nem sikerült elindítani az AI-t.";
+console.error(
+"VAPI START ERROR:",
+error
+);
 
-                }
-              );
+console.error(
+"VAPI START ERROR JSON:",
+safeJSON(error)
+);
 
-            }
+callActive=false;
 
-          } else {
+document
+.getElementById("callButton")
+.classList.remove("active");
 
-            vapiInstance.stop();
+setStatus(
+"Nem sikerült elindítani az AI-t."
+);
 
-          }
+});
 
-        } catch(error) {
+}
 
-          console.error(
-            "Vapi start exception:",
-            error
-          );
+}else{
 
+vapiInstance.stop();
 
-          callActive = false;
+}
 
+}catch(error){
 
-          document
-            .getElementById(
-              "callButton"
-            )
-            .classList
-            .remove("active");
+console.error(
+"VAPI START EXCEPTION:",
+error
+);
 
+callActive=false;
 
-          document
-            .getElementById(
-              "status"
-            )
-            .textContent =
-            "Nem sikerült elindítani az AI-t.";
+document
+.getElementById("callButton")
+.classList.remove("active");
 
-        }
+setStatus(
+"Nem sikerült elindítani az AI-t."
+);
 
-      }
-    );
+}
+
+}
+);
+
+
+/* =====================================================
+ AUTOMATIKUS ELLENŐRZÉS
+===================================================== */
+
+if(
+currentUser &&
+hasPremium()
+){
+
+console.log(
+"Premium hozzáférés aktív."
+);
+
+}
 
 </script>
 
