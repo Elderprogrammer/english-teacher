@@ -373,6 +373,12 @@ button{
   box-shadow:0 0 80px rgba(56,189,248,.28);
 }
 
+.call:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+  transform:none;
+}
+
 .status{
   color:#aebbd0;
   min-height:24px;
@@ -796,7 +802,7 @@ Nyomd meg a gombot és kezdj el beszélgetni
 az AI angoltanároddal.
 </p>
 
-<button id="callButton" class="call">
+<button id="callButton" class="call" disabled>
 🎙️
 </button>
 
@@ -988,6 +994,7 @@ const ASSISTANT_ID =
 
 let vapi = null;
 let callActive = false;
+let vapiReady = false;
 
 
 /* =====================================================
@@ -1386,6 +1393,8 @@ document.getElementById("app")
 
 updateExpiry();
 
+updateCallButtonState();
+
 window.scrollTo(0,0);
 
 }
@@ -1443,29 +1452,63 @@ document.getElementById("landing")
 
 /* =====================================================
    VAPI BETÖLTÉS
+
+   FONTOS: az eredeti kódban a dinamikus
+   import(".../+esm") csendben elhasalhatott
+   (pl. tiltott 3rd-party script / adblokkoló / CSP miatt),
+   és a gomb végig letiltva/inaktívan maradt anélkül,
+   hogy ez látszott volna. Itt:
+   1) a gomb "disabled", amíg a Vapi tényleg be nem töltött
+   2) ha az import elsőre nem sikerül, van egy második
+      próbálkozás egy másik CDN-ről (unpkg)
+   3) a hibaüzenet a konzolban RÉSZLETESEN megjelenik,
+      hogy GitHub Pages-en is könnyen debuggolható legyen
    ===================================================== */
+
+async function loadVapiSdk(){
+
+const sources = [
+"https://cdn.jsdelivr.net/npm/@vapi-ai/web@2/dist/vapi.mjs",
+"https://cdn.jsdelivr.net/npm/@vapi-ai/web/+esm",
+"https://unpkg.com/@vapi-ai/web@latest/dist/vapi.mjs"
+];
+
+let lastError=null;
+
+for(const src of sources){
+
+try{
+
+const module = await import(/* webpackIgnore: true */ src);
+
+const Vapi = module.default || module.Vapi;
+
+if(Vapi){
+
+return Vapi;
+
+}
+
+}catch(error){
+
+lastError=error;
+
+console.warn("Vapi SDK betöltés sikertelen innen:",src,error);
+
+}
+
+}
+
+throw lastError || new Error("Vapi SDK nem tölthető be egyik forrásból sem.");
+
+}
+
 
 async function initVapi(){
 
 try{
 
-const module =
-await import(
-"https://cdn.jsdelivr.net/npm/@vapi-ai/web/+esm"
-);
-
-const Vapi =
-module.default || module.Vapi;
-
-
-if(!Vapi){
-
-throw new Error(
-"Vapi SDK nem található."
-);
-
-}
-
+const Vapi = await loadVapiSdk();
 
 vapi=new Vapi(VAPI_PUBLIC_KEY);
 
@@ -1542,6 +1585,11 @@ setStatus(
 });
 
 
+vapiReady=true;
+
+updateCallButtonState();
+
+
 setStatus(
 "AI készen áll — nyomd meg a mikrofont."
 );
@@ -1555,11 +1603,32 @@ error
 );
 
 
+vapiReady=false;
+
+updateCallButtonState();
+
+
 setStatus(
-"Az AI betöltése sikertelen."
+"Az AI betöltése sikertelen. (Részletek a böngésző konzolján, F12.)"
 );
 
 }
+
+}
+
+
+function updateCallButtonState(){
+
+const button =
+document.getElementById("callButton");
+
+if(!button){
+
+return;
+
+}
+
+button.disabled = !vapiReady;
 
 }
 
@@ -1588,10 +1657,10 @@ return;
 }
 
 
-if(!vapi){
+if(!vapi || !vapiReady){
 
 setStatus(
-"Az AI még töltődik..."
+"Az AI még töltődik, várj néhány másodpercet..."
 );
 
 return;
