@@ -347,6 +347,8 @@ button{
   color:var(--muted);
 }
 
+/* CALL BUTTON */
+
 .call{
   width:190px;
   height:190px;
@@ -379,15 +381,73 @@ button{
   transform:none;
 }
 
+/* CHAT (élő felirat / transcript) */
+
+.chat-window{
+  width:100%;
+  max-width:700px;
+  margin:15px auto 0;
+  height:360px;
+  overflow-y:auto;
+  padding:20px;
+  text-align:left;
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:rgba(13,20,40,.72);
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.bubble{
+  max-width:80%;
+  padding:12px 16px;
+  border-radius:16px;
+  line-height:1.5;
+  font-size:15px;
+  white-space:pre-wrap;
+}
+
+.bubble.assistant{
+  align-self:flex-start;
+  background:rgba(139,92,246,.14);
+  border:1px solid rgba(139,92,246,.25);
+  color:#ede9fe;
+}
+
+.bubble.user{
+  align-self:flex-end;
+  background:rgba(56,189,248,.14);
+  border:1px solid rgba(56,189,248,.25);
+  color:#e0f2fe;
+}
+
+.bubble.pending{
+  opacity:.6;
+}
+
+.chat-input-row{
+  max-width:700px;
+  margin:14px auto 0;
+  display:flex;
+  gap:10px;
+}
+
+.chat-input-row .input{
+  flex:1;
+  margin:0;
+}
+
 .status{
   color:#aebbd0;
   min-height:24px;
+  margin-top:14px;
 }
 
 .expiry{
   color:#64748b;
   font-size:13px;
-  margin-top:15px;
+  margin-top:5px;
 }
 
 /* MODAL */
@@ -553,6 +613,10 @@ footer{
   .call{
     width:160px;
     height:160px;
+  }
+
+  .chat-window{
+    height:300px;
   }
 }
 </style>
@@ -810,8 +874,7 @@ Készen állsz?
 </h1>
 
 <p>
-Nyomd meg a gombot és kezdj el beszélgetni
-az AI angoltanároddal.
+Írj angolul, és beszélgess az AI angoltanároddal.
 </p>
 
 <button
@@ -820,6 +883,8 @@ class="call"
 disabled>
 🎙️
 </button>
+
+<div id="chatWindow" class="chat-window"></div>
 
 <div
 id="status"
@@ -1033,6 +1098,18 @@ class="msg">
 
 /* =====================================================
    VAPI BEÁLLÍTÁSOK
+
+   A hangot és a nyelvi modellt maga a Vapi Assistant
+   (a fenti ASSISTANT_ID mögötti konfiguráció) adja,
+   ezt a kódból NEM módosítjuk — így marad meg biztosan
+   a jelenlegi ("alap") Vapi hang.
+
+   A RENDSZERPROMPTOT (SYSTEM_PROMPT lent, csak
+   referenciaként van itt) másold be a Vapi
+   dashboardon (dashboard.vapi.ai) az adott Assistant
+   "System Prompt" mezőjébe — ez a legbiztosabb módja
+   annak, hogy a hang és a modell beállítása ne törjön el.
+   A kódból csak a nyitó mondatot (firstMessage) írjuk felül.
 ===================================================== */
 
 const VAPI_PUBLIC_KEY =
@@ -1045,6 +1122,44 @@ const ASSISTANT_ID =
 let vapiInstance = null;
 let callActive = false;
 let vapiReady = false;
+
+
+const OPENING_LINE =
+"Hi, my name is Gabi, and I am your new AI-based English teacher.";
+
+const SYSTEM_PROMPT = `Te egy barátságos, türelmes AI angoltanár vagy, akivel a felhasználó élőszóban (vagy itt: írásban), angolul beszélget. A cél nem a nyelvtani előadás, hanem a valódi, folyamatos beszélgetés angolul, amely közben:
+
+- természetes társalgást folytatsz a felhasználóval (kérdezel, reagálsz, továbbviszed a témát),
+- figyeled és finoman javítod a kiejtést, a nyelvtant és a szóhasználatot,
+- fenntartod a beszélgetés lendületét — a javítás sosem törheti meg túlzottan a társalgást.
+
+A neved Gabi.
+Mindig angolul beszélsz a felhasználóval, hacsak ő nem kér kifejezetten magyar nyelvű magyarázatot egy-egy ponthoz.
+
+Alapelvek:
+
+1. Beszélgetés > kikérdezés. Ne tartsd magad szigorú "tanórai" formához. Kérdezz vissza, reagálj érdeklődéssel, oszd meg saját (kitalált, semleges) véleményedet, tartsd fenn a párbeszédet, mint egy anyanyelvi beszélgetőpartner tenné.
+2. Szintfelmérés menet közben. Az első pár megszólalásból mérd fel a felhasználó nyelvi szintjét (kezdő / középhaladó / haladó), és ehhez igazítsd a szókincsed, mondatszerkezeteid és a beszédtempód.
+3. Javítás finoman, megszakítás nélkül. Hagyd, hogy a felhasználó befejezze a gondolatát. Utána: ismételd vissza helyesen a hibás részt természetes módon (recast), majd ha a hiba ismétlődő vagy fontos, egy rövid, egy-két mondatos magyarázatot adj hozzá, majd folytasd a beszélgetést egy kapcsolódó kérdéssel.
+4. Kiejtés/íráskép javítása. Figyelj a jellegzetes magyar anyanyelvi nehézségekre. Ha bizonytalan vagy abban, hogy hibát láttál/hallottál-e, ne javíts túlbuzgón — inkább kérdezz rá természetesen.
+5. Ne javíts mindent egyszerre. Fókuszálj beszélgetésenként 1-3 visszatérő hibatípusra. A kisebb, egyszeri elszólásokat hagyd figyelmen kívül.
+6. Pozitív megerősítés. Mindig ismerd el, amit jól csinál, mielőtt javítanál. Legyen bátorító, sosem lekezelő vagy kioktató a hangnem.
+7. Alkalmazkodó nehézségi szint. Ha a felhasználó könnyedén válaszol, emeld a szintet. Ha küszködik, egyszerűsíts, adj több támpontot.
+
+Beszélgetés felépítése:
+- Indítás: laza, természetes nyitó kérdéssel kezdj, ne teszteléssel.
+- Fenntartás: minden válasz után tegyél fel egy továbbvivő kérdést vagy fűzz hozzá egy releváns megjegyzést.
+- Témaváltás: ha egy téma kimerül, vezess át természetesen egy másikra.
+- Zárás/összegzés: ha a felhasználó kéri, adj egy rövid, barátságos összefoglalót: mi ment jól, 1-3 konkrét fejlesztendő pont, esetleg egy-két szó/kifejezés, amit érdemes gyakorolnia.
+
+Hangnem: Meleg, érdeklődő, türelmes, humoros ha helyénvaló. Olyan, mint egy segítőkész anyanyelvi barát, nem egy szigorú tanár. A válaszaid legyenek rövidek, beszélgetős hosszúságúak, hogy a felhasználó minél többet gyakoroljon.
+
+Amit kerülj:
+- Ne javíts minden apró hibát.
+- Ne beszélj/írj túl sokat egyhuzamban.
+- Ne váltogass magyar és angol nyelv között feleslegesen.
+- Ne adj hosszú, listaszerű nyelvtani leckéket menet közben.
+- Ne ismételd meg azt, amit már hallottál/olvastál, csak a hibákat mondd/emeld ki.`;
 
 
 /* =====================================================
@@ -1475,6 +1590,12 @@ function hasPremium(){
 
 /* =====================================================
    APP MEGJELENÍTÉSE
+
+   Az app (a chat) KIZÁRÓLAG akkor jelenik meg,
+   ha van bejelentkezett felhasználó ÉS aktív,
+   le nem járt előfizetése van (hasPremium()).
+   Enélkül mindig a bejelentkezés / kód modalra
+   dobjuk vissza a felhasználót.
 ===================================================== */
 
 function showApp(){
@@ -1511,6 +1632,8 @@ function showApp(){
 
   updateCallButtonState();
 
+  resetTranscript();
+
   window.scrollTo(0,0);
 
 }
@@ -1546,13 +1669,13 @@ function updateExpiry(){
    KIJELENTKEZÉS
 ===================================================== */
 
-async function logout(){
+function logout(){
 
   try{
 
     if(vapiInstance && callActive){
 
-      await vapiInstance.stop();
+      vapiInstance.stop();
 
     }
 
@@ -1582,15 +1705,60 @@ async function logout(){
 
 
 /* =====================================================
+   FELIRAT (TRANSCRIPT) ABLAK
+===================================================== */
+
+function resetTranscript(){
+
+  const chatWindow =
+  document.getElementById("chatWindow");
+
+  if(chatWindow){
+
+    chatWindow.innerHTML="";
+
+  }
+
+}
+
+
+function appendBubble(role,text){
+
+  const chatWindow =
+  document.getElementById("chatWindow");
+
+  if(!chatWindow){
+
+    return;
+
+  }
+
+
+  const bubble =
+  document.createElement("div");
+
+
+  bubble.className =
+  "bubble " + (role==="user" ? "user" : "assistant");
+
+
+  bubble.textContent = text;
+
+
+  chatWindow.appendChild(bubble);
+
+
+  chatWindow.scrollTop =
+  chatWindow.scrollHeight;
+
+
+  return bubble;
+
+}
+
+
+/* =====================================================
    VAPI HTML SDK BETÖLTÉSE
-
-   NEM használunk:
-   import(...)
-   new Vapi(...)
-   @vapi-ai/web +esm
-
-   Ehelyett a Vapi HTML Script Tag SDK-t
-   használjuk.
 ===================================================== */
 
 function loadVapi(){
@@ -1619,12 +1787,6 @@ function loadVapi(){
       "Vapi HTML SDK betöltve."
     );
 
-
-    /*
-     * Rövid várakozás arra az esetre,
-     * ha a script után a vapiSDK objektum
-     * csak egy pillanattal később jelenik meg.
-     */
 
     waitForVapiSDK(0);
 
@@ -1655,10 +1817,6 @@ function loadVapi(){
 
 }
 
-
-/* =====================================================
-   VAPI SDK ELLENŐRZÉSE
-===================================================== */
 
 function waitForVapiSDK(attempt){
 
@@ -1705,6 +1863,11 @@ function waitForVapiSDK(attempt){
 
 /* =====================================================
    VAPI INICIALIZÁLÁS
+
+   Csak a VAPI_PUBLIC_KEY-t és az ASSISTANT_ID-t adjuk át.
+   A modellt/hangot/transzkribert NEM írjuk felül itt,
+   így az marad, ami a Vapi dashboardon be van állítva
+   (= "alap hang").
 ===================================================== */
 
 function initializeVapi(){
@@ -1783,6 +1946,11 @@ function initializeVapi(){
 
 /* =====================================================
    VAPI ESEMÉNYEK
+
+   A "message" eseményből szűrjük ki a végleges
+   (final) feliratokat, és buborékként megjelenítjük
+   őket — így szövegesen is látszik, mit mond Gabi
+   és mit ért a te beszédedből.
 ===================================================== */
 
 function setupVapiEvents(){
@@ -1836,6 +2004,9 @@ function setupVapiEvents(){
       }
 
 
+      resetTranscript();
+
+
       setStatus(
         "🟢 Kapcsolódva — beszélj az AI-tanárral!"
       );
@@ -1875,6 +2046,40 @@ function setupVapiEvents(){
 
       setStatus(
         "A beszélgetés véget ért."
+      );
+
+    }
+  );
+
+
+  vapiInstance.on(
+    "message",
+    function(message){
+
+      if(!message || message.type !== "transcript"){
+
+        return;
+
+      }
+
+
+      if(message.transcriptType !== "final"){
+
+        return;
+
+      }
+
+
+      if(!message.transcript){
+
+        return;
+
+      }
+
+
+      appendBubble(
+        message.role === "assistant" ? "assistant" : "user",
+        message.transcript
       );
 
     }
@@ -1923,6 +2128,12 @@ function setupVapiEvents(){
 
 /* =====================================================
    HÍVÁS INDÍTÁSA / LEÁLLÍTÁSA
+
+   assistantOverrides: csak a nyitó mondatot (firstMessage)
+   írjuk felül kódból. A rendszerpromptot (SYSTEM_PROMPT)
+   a Vapi dashboardon, az Assistant beállításai között
+   add meg — így biztos, hogy a hang/modell beállítás
+   nem sérül.
 ===================================================== */
 
 async function toggleCall(){
@@ -1983,8 +2194,16 @@ async function toggleCall(){
     );
 
 
+    const assistantOverrides = {
+
+      firstMessage: OPENING_LINE
+
+    };
+
+
     await vapiInstance.start(
-      ASSISTANT_ID
+      ASSISTANT_ID,
+      assistantOverrides
     );
 
 
@@ -2026,27 +2245,6 @@ async function toggleCall(){
 
 
 /* =====================================================
-   STATUS
-===================================================== */
-
-function setStatus(text){
-
-  const status =
-  document.getElementById(
-    "status"
-  );
-
-
-  if(status){
-
-    status.textContent=text;
-
-  }
-
-}
-
-
-/* =====================================================
    GOMB ÁLLAPOTA
 ===================================================== */
 
@@ -2067,6 +2265,27 @@ function updateCallButtonState(){
 
   button.disabled =
   !vapiReady;
+
+}
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+function setStatus(text){
+
+  const status =
+  document.getElementById(
+    "status"
+  );
+
+
+  if(status){
+
+    status.textContent=text;
+
+  }
 
 }
 
